@@ -1,24 +1,39 @@
-# DESAFIO-Batalha-naval
-Criando o código com níveis de dificuldades!
 #include <stdio.h>
 
 #define TAM_TABULEIRO 10
 #define TAM_NAVIO 3
 
 int main() {
+    // Inicializa o tabuleiro com 0 (água)
     int tabuleiro[TAM_TABULEIRO][TAM_TABULEIRO] = {0};
 
+    // -------------------------
     // Coordenadas dos navios
+    // -------------------------
+
+    // Navio horizontal
     int linha_navio_horizontal = 2;
     int coluna_navio_horizontal = 4;
 
+    // Navio vertical
     int linha_navio_vertical = 5;
     int coluna_navio_vertical = 7;
 
-    int pode_posicionar = 1;
-    int i, j, c; // ?? Declarações fora dos loops
+    // Navio diagonal principal (?)
+    int linha_navio_diag1 = 0;
+    int coluna_navio_diag1 = 0;
 
-    // Posicionar navio horizontal
+    // Navio diagonal secundária (?)
+    int linha_navio_diag2 = 0;
+    int coluna_navio_diag2 = 9;
+
+    // Variáveis auxiliares
+    int pode_posicionar = 1;
+    int i, j, c;
+
+    // -------------------------
+    // Posiciona navio horizontal
+    // -------------------------
     if (coluna_navio_horizontal + TAM_NAVIO <= TAM_TABULEIRO) {
         pode_posicionar = 1;
         for (i = 0; i < TAM_NAVIO; i++) {
@@ -38,7 +53,9 @@ int main() {
         printf("Erro: navio horizontal fora dos limites do tabuleiro.\n");
     }
 
-    // Posicionar navio vertical
+    // -------------------------
+    // Posiciona navio vertical
+    // -------------------------
     if (linha_navio_vertical + TAM_NAVIO <= TAM_TABULEIRO) {
         pode_posicionar = 1;
         for (i = 0; i < TAM_NAVIO; i++) {
@@ -58,7 +75,55 @@ int main() {
         printf("Erro: navio vertical fora dos limites do tabuleiro.\n");
     }
 
+    // -------------------------
+    // Posiciona navio diagonal principal (?)
+    // -------------------------
+    if (linha_navio_diag1 + TAM_NAVIO <= TAM_TABULEIRO &&
+        coluna_navio_diag1 + TAM_NAVIO <= TAM_TABULEIRO) {
+        pode_posicionar = 1;
+        for (i = 0; i < TAM_NAVIO; i++) {
+            if (tabuleiro[linha_navio_diag1 + i][coluna_navio_diag1 + i] != 0) {
+                pode_posicionar = 0;
+                break;
+            }
+        }
+        if (pode_posicionar) {
+            for (i = 0; i < TAM_NAVIO; i++) {
+                tabuleiro[linha_navio_diag1 + i][coluna_navio_diag1 + i] = 3;
+            }
+        } else {
+            printf("Erro: sobreposição ao posicionar navio diagonal principal.\n");
+        }
+    } else {
+        printf("Erro: navio diagonal principal fora dos limites do tabuleiro.\n");
+    }
+
+    // -------------------------
+    // Posiciona navio diagonal secundária (?)
+    // -------------------------
+    if (linha_navio_diag2 + TAM_NAVIO <= TAM_TABULEIRO &&
+        coluna_navio_diag2 - (TAM_NAVIO - 1) >= 0) {
+        pode_posicionar = 1;
+        for (i = 0; i < TAM_NAVIO; i++) {
+            if (tabuleiro[linha_navio_diag2 + i][coluna_navio_diag2 - i] != 0) {
+                pode_posicionar = 0;
+                break;
+            }
+        }
+        if (pode_posicionar) {
+            for (i = 0; i < TAM_NAVIO; i++) {
+                tabuleiro[linha_navio_diag2 + i][coluna_navio_diag2 - i] = 3;
+            }
+        } else {
+            printf("Erro: sobreposição ao posicionar navio diagonal secundária.\n");
+        }
+    } else {
+        printf("Erro: navio diagonal secundária fora dos limites do tabuleiro.\n");
+    }
+
+    // -------------------------
     // Exibir o tabuleiro
+    // -------------------------
     printf("\nTABULEIRO BATALHA NAVAL (0 = água, 3 = navio)\n\n");
 
     // Cabeçalho A-J
