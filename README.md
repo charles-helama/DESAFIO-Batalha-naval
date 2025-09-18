@@ -1,146 +1,94 @@
 #include <stdio.h>
+#include <stdlib.h>
 
-#define TAM_TABULEIRO 10
-#define TAM_NAVIO 3
+// Tamanho fixo da matriz de habilidade
+#define TAM_HABILIDADE 5
+#define CENTRO (TAM_HABILIDADE / 2)
 
-int main() {
-    // Inicializa o tabuleiro com 0 (água)
-    int tabuleiro[TAM_TABULEIRO][TAM_TABULEIRO] = {0};
+// Gera uma matriz em formato de cone (3 linhas superiores)
+void gerar_cone(int matriz[TAM_HABILIDADE][TAM_HABILIDADE]) {
+    int i, j;
 
-    // -------------------------
-    // Coordenadas dos navios
-    // -------------------------
-
-    // Navio horizontal
-    int linha_navio_horizontal = 2;
-    int coluna_navio_horizontal = 4;
-
-    // Navio vertical
-    int linha_navio_vertical = 5;
-    int coluna_navio_vertical = 7;
-
-    // Navio diagonal principal (?)
-    int linha_navio_diag1 = 0;
-    int coluna_navio_diag1 = 0;
-
-    // Navio diagonal secundária (?)
-    int linha_navio_diag2 = 0;
-    int coluna_navio_diag2 = 9;
-
-    // Variáveis auxiliares
-    int pode_posicionar = 1;
-    int i, j, c;
-
-    // -------------------------
-    // Posiciona navio horizontal
-    // -------------------------
-    if (coluna_navio_horizontal + TAM_NAVIO <= TAM_TABULEIRO) {
-        pode_posicionar = 1;
-        for (i = 0; i < TAM_NAVIO; i++) {
-            if (tabuleiro[linha_navio_horizontal][coluna_navio_horizontal + i] != 0) {
-                pode_posicionar = 0;
-                break;
-            }
+    // Zera toda a matriz
+    for (i = 0; i < TAM_HABILIDADE; i++) {
+        for (j = 0; j < TAM_HABILIDADE; j++) {
+            matriz[i][j] = 0;
         }
-        if (pode_posicionar) {
-            for (i = 0; i < TAM_NAVIO; i++) {
-                tabuleiro[linha_navio_horizontal][coluna_navio_horizontal + i] = 3;
-            }
-        } else {
-            printf("Erro: sobreposição ao posicionar navio horizontal.\n");
-        }
-    } else {
-        printf("Erro: navio horizontal fora dos limites do tabuleiro.\n");
     }
 
-    // -------------------------
-    // Posiciona navio vertical
-    // -------------------------
-    if (linha_navio_vertical + TAM_NAVIO <= TAM_TABULEIRO) {
-        pode_posicionar = 1;
-        for (i = 0; i < TAM_NAVIO; i++) {
-            if (tabuleiro[linha_navio_vertical + i][coluna_navio_vertical] != 0) {
-                pode_posicionar = 0;
-                break;
+    // Preenche 3 linhas superiores com formato de cone
+    for (i = 0; i < 3; i++) {
+        for (j = 0; j < TAM_HABILIDADE; j++) {
+            if (abs(j - CENTRO) <= i) {
+                matriz[i][j] = 3;
             }
         }
-        if (pode_posicionar) {
-            for (i = 0; i < TAM_NAVIO; i++) {
-                tabuleiro[linha_navio_vertical + i][coluna_navio_vertical] = 3;
-            }
-        } else {
-            printf("Erro: sobreposição ao posicionar navio vertical.\n");
-        }
-    } else {
-        printf("Erro: navio vertical fora dos limites do tabuleiro.\n");
     }
+}
 
-    // -------------------------
-    // Posiciona navio diagonal principal (?)
-    // -------------------------
-    if (linha_navio_diag1 + TAM_NAVIO <= TAM_TABULEIRO &&
-        coluna_navio_diag1 + TAM_NAVIO <= TAM_TABULEIRO) {
-        pode_posicionar = 1;
-        for (i = 0; i < TAM_NAVIO; i++) {
-            if (tabuleiro[linha_navio_diag1 + i][coluna_navio_diag1 + i] != 0) {
-                pode_posicionar = 0;
-                break;
+// Gera uma matriz em formato de cruz
+void gerar_cruz(int matriz[TAM_HABILIDADE][TAM_HABILIDADE]) {
+    int i, j;
+
+    for (i = 0; i < TAM_HABILIDADE; i++) {
+        for (j = 0; j < TAM_HABILIDADE; j++) {
+            if (i == CENTRO || j == CENTRO) {
+                matriz[i][j] = 3;
+            } else {
+                matriz[i][j] = 0;
             }
         }
-        if (pode_posicionar) {
-            for (i = 0; i < TAM_NAVIO; i++) {
-                tabuleiro[linha_navio_diag1 + i][coluna_navio_diag1 + i] = 3;
-            }
-        } else {
-            printf("Erro: sobreposição ao posicionar navio diagonal principal.\n");
-        }
-    } else {
-        printf("Erro: navio diagonal principal fora dos limites do tabuleiro.\n");
     }
+}
 
-    // -------------------------
-    // Posiciona navio diagonal secundária (?)
-    // -------------------------
-    if (linha_navio_diag2 + TAM_NAVIO <= TAM_TABULEIRO &&
-        coluna_navio_diag2 - (TAM_NAVIO - 1) >= 0) {
-        pode_posicionar = 1;
-        for (i = 0; i < TAM_NAVIO; i++) {
-            if (tabuleiro[linha_navio_diag2 + i][coluna_navio_diag2 - i] != 0) {
-                pode_posicionar = 0;
-                break;
+// Gera uma matriz com formato de octaedro (losango)
+void gerar_octaedro(int matriz[TAM_HABILIDADE][TAM_HABILIDADE]) {
+    int i, j;
+
+    for (i = 0; i < TAM_HABILIDADE; i++) {
+        for (j = 0; j < TAM_HABILIDADE; j++) {
+            if (abs(i - CENTRO) + abs(j - CENTRO) <= CENTRO) {
+                matriz[i][j] = 3;
+            } else {
+                matriz[i][j] = 0;
             }
         }
-        if (pode_posicionar) {
-            for (i = 0; i < TAM_NAVIO; i++) {
-                tabuleiro[linha_navio_diag2 + i][coluna_navio_diag2 - i] = 3;
-            }
-        } else {
-            printf("Erro: sobreposição ao posicionar navio diagonal secundária.\n");
-        }
-    } else {
-        printf("Erro: navio diagonal secundária fora dos limites do tabuleiro.\n");
     }
+}
 
-    // -------------------------
-    // Exibir o tabuleiro
-    // -------------------------
-    printf("\nTABULEIRO BATALHA NAVAL (0 = água, 3 = navio)\n\n");
+// Imprime a matriz no console
+void imprimir_matriz(int matriz[TAM_HABILIDADE][TAM_HABILIDADE]) {
+    int i, j;
 
-    // Cabeçalho A-J
-    printf("   ");
-    for (c = 0; c < TAM_TABULEIRO; c++) {
-        printf(" %c", 'A' + c);
-    }
-    printf("\n");
-
-    // Conteúdo das linhas
-    for (i = 0; i < TAM_TABULEIRO; i++) {
-        printf("%2d ", i + 1);
-        for (j = 0; j < TAM_TABULEIRO; j++) {
-            printf(" %d", tabuleiro[i][j]);
+    for (i = 0; i < TAM_HABILIDADE; i++) {
+        for (j = 0; j < TAM_HABILIDADE; j++) {
+            printf("%d ", matriz[i][j]);
         }
         printf("\n");
     }
+    printf("\n");
+}
+
+int main() {
+    // Matrizes para armazenar as habilidades
+    int cone[TAM_HABILIDADE][TAM_HABILIDADE];
+    int cruz[TAM_HABILIDADE][TAM_HABILIDADE];
+    int octaedro[TAM_HABILIDADE][TAM_HABILIDADE];
+
+    // Geração das formas
+    gerar_cone(cone);
+    gerar_cruz(cruz);
+    gerar_octaedro(octaedro);
+
+    // Impressão
+    printf("Cone:\n");
+    imprimir_matriz(cone);
+
+    printf("Cruz:\n");
+    imprimir_matriz(cruz);
+
+    printf("Octaedro:\n");
+    imprimir_matriz(octaedro);
 
     return 0;
 }
